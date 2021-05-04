@@ -51,7 +51,6 @@ kubectl apply -f ./srcs/influxdb/influxdb.yaml
 docker build -t telegraf ./srcs/telegraf
 kubectl apply -f ./srcs/telegraf/telegraf.yaml
 
-# building my grafana image and deploying the container
 docker build -t grafana ./srcs/grafana
 kubectl apply -f ./srcs/grafana/grafana.yaml
 
@@ -77,6 +76,8 @@ kubectl apply -f ./srcs/grafana/grafana.yaml
 #kubectl exec deploy/mysql -- pkill mysql
 #kubectl get deployments
 #kubectl get services.
+#kubectl get all
+#kubectl delete -n default pod influxdb-6b648fbcf4-xtj4l 
 
 #commands 
 
