@@ -11,9 +11,6 @@ minikube start 	--driver=virtualbox \
                 --addons metallb \
                 --addons dashboard
 
-# MINIKUBE_IP="$(minikube ip)"
-
-# sed -i "" "s/__MINIKUBE_IP__/$MINIKUBE_IP/g"    srcs/ftps_pt/Dockerfile
 
 # preparing MetalLB
 kubectl create secret generic -n metallb-system memberlist --from-literal=secretkey="$(openssl rand -base64 128)"
@@ -58,12 +55,31 @@ kubectl apply -f ./srcs/telegraf/telegraf.yaml
 docker build -t grafana ./srcs/grafana
 kubectl apply -f ./srcs/grafana/grafana.yaml
 
+
+
+#                           loadbalancer
+#   Grafana             Wordpress       nginx      PhpMyAdmin         FTPS
+#
+#   influxdb                                                            MYSQL
+#
+
 # service		user		password	db_name		hostname	db_charset
 # Grafana:		admin		admin
-# phpMyAdmin:	mysql		mysql
+# phpMyAdmin:	admin		admin
 # Wordpress:	mysql		mysql		wordpress	mysql		utf8
 # SSH: 			int the terminal "ssh sfeith@192.168.99.220 -p 22"
 				# password: halloGoed!1
 
 # to enter a container:
 # kubectl exec pod_deployment -it -- sh
+
+#get all
+#kubectl exec deploy/mysql -- pkill mysql
+#kubectl get deployments
+#kubectl get services.
+
+#commands 
+
+# clusterIP and loadbalancer what is the difference. 
+# ftps doet het niet met uploaden alleen dowloandden
+# wat is admin van wordpress 
