@@ -2,7 +2,7 @@ ssh-keygen -A
 /usr/sbin/sshd
 nginx
 
-# making sure that the container stops whem one of his components stop
+# stop container, if one ot he above components stop
 while :
 do
 	sleep 10

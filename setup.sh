@@ -1,86 +1,55 @@
 # deleting the current minikube, if it exists
 minikube delete
 
-# rm -rf ~/.minikube
-# mkdir -p ~/goinfre/.minikube
-# ln -s ~/goinfre/.minikube ~/.minikube
-
-# starting minikube's original driver, which is virutalbox and enabling MetalLB and kubernetes' dashboard
+#1
 minikube start 	--driver=virtualbox \
                 --cpus=2 --memory=2048 --disk-size=10g \
                 --addons metallb \
                 --addons dashboard
 
 
-# preparing MetalLB
+# 2
 kubectl create secret generic -n metallb-system memberlist --from-literal=secretkey="$(openssl rand -base64 128)"
 kubectl apply -f srcs/metallb.yaml
 
-# connecting to the docker environment that is running in the cluster
+# 3
 eval $(minikube docker-env)
 
-# creating my service account
+# 4
 kubectl create serviceaccount sfeith	
 kubectl apply -f srcs/service_account.yaml
 
-# building my phpmyadmin image and deploying the container
+# 5
 docker build -t phpmyadmin ./srcs/phpmyadmin
 kubectl apply -f ./srcs/phpmyadmin/phpmyadmin.yaml
 
-# building my nginx image and deploying the container
+# 6
 docker build -t nginx ./srcs/nginx
 kubectl apply -f ./srcs/nginx/nginx.yaml
 
-# building my ftps image and deploying the container
+# 7
 docker build -t ftps ./srcs/ftps
 kubectl apply -f ./srcs/ftps/ftps.yaml
 
-# building my mysql image and deploying the container
+# 8
 docker build -t mysql ./srcs/mysql
 kubectl apply -f ./srcs/mysql/mysql.yaml
 
-# building my wordpress image and deploying the container
+# 9
 docker build -t wordpress ./srcs/wordpress
 kubectl apply -f ./srcs/wordpress/wordpress.yaml
 
-# building my influxdb image and deploying the container
+# 10
 docker build -t influxdb ./srcs/influxdb
 kubectl apply -f ./srcs/influxdb/influxdb.yaml
 
-# building my telegraf image and deploying the container
+# 11
 docker build -t telegraf ./srcs/telegraf
 kubectl apply -f ./srcs/telegraf/telegraf.yaml
 
+# 12
 docker build -t grafana ./srcs/grafana
 kubectl apply -f ./srcs/grafana/grafana.yaml
 
 
 
-#                           loadbalancer
-#   Grafana             Wordpress       nginx      PhpMyAdmin         FTPS
-#
-#   influxdb                                                            MYSQL
-#
-
-# service		user		password	db_name		hostname	db_charset
-# Grafana:		admin		admin
-# phpMyAdmin:	admin		admin
-# Wordpress:	mysql		mysql		wordpress	mysql		utf8
-# SSH: 			int the terminal "ssh sfeith@192.168.99.220 -p 22"
-				# password: halloGoed!1
-
-# to enter a container:
-# kubectl exec pod_deployment -it -- sh
-
-#get all
-#kubectl exec deploy/mysql -- pkill mysql
-#kubectl get deployments
-#kubectl get services.
-#kubectl get all
-#kubectl delete -n default pod influxdb-6b648fbcf4-xtj4l 
-
-#commands 
-
-# clusterIP and loadbalancer what is the difference. 
-# ftps doet het niet met uploaden alleen dowloandden
-# wat is admin van wordpress 

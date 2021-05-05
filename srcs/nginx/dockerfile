@@ -1,47 +1,43 @@
-# NGINX is a open source HTTP web server, mail proxy server, and reverse proxy and 
-# load balancer for HTTP, TCP, and UDP traffic. NGINX is known for its high performance, 
-# stability, rich feature set, simple configuration, and low resource consumption.
-
 # building from Alpine Linux
 FROM alpine:3.12
 
-# update the apk package manager and install nginx, openssl and openssh
+# 1
 RUN apk update && apk upgrade && \
 	apk add nginx && \
 	apk add openssl && \
 	apk add openssh 
 
-# creating a folder for nginx.pid and for www
+# 2
 RUN mkdir /var/run/nginx && mkdir /www
 
-# adding user www for nginx
+#3
 RUN adduser -D -g 'www' www
 
-# changing the user ID for the hierarchies rooted in the files
+# 4
 RUN chown -R www:www /var/lib/nginx && \
 	chown -R www:www /www
 
-# creating new key and ssl certificate and putting them in the right directory
+# 5
 RUN openssl req -x509 -nodes -days 365 -newkey rsa:4096 -subj '/C=NL/ST=Noord-Holland/O=Codam/CN=kubernetes' \
 	-keyout /etc/ssl/nginx.key -out /etc/ssl/nginx.crt
 
-# copying the nginx configuration file and the index page to the container
+# 6
 COPY nginx.conf /etc/nginx/nginx.conf
 COPY index.html /www/index.html 
 COPY sshd_config /etc/ssh/sshd_config
 
-# adding a user for the ssh and changing the password everywhere
+# 7
 run adduser -h / -D sfeith && \
 	echo "sfeith:halloGoed!1" | chpasswd		
 
-# copy the startup.sh to the container
+# 8
 COPY start.sh /start.sh
 
-# give the correct execution rights to the start.sh
+#9
 RUN chmod +x ./start.sh
 
-# expose the correct ports
+# 10
 EXPOSE 22 80 443
 
-# give the command to start the container
+# 11
 CMD ./start.sh
